@@ -29,7 +29,7 @@
             { "auto_uv", "_" }
         };
 
-        const int maxModes = 20;
+        const int maxModes = 21;
 
         public static Dictionary<int, string> GetDictonary()
         {
@@ -37,11 +37,13 @@
             {
               {2, Properties.Strings.Silent},
               {0, Properties.Strings.Balanced},
-              {1, Properties.Strings.Turbo}
+              {1, Properties.Strings.TurboCPU},
+              {20, Properties.Strings.TurboGPU}
             };
 
             for (int i = 3; i < maxModes; i++)
             {
+                if (i == 20) continue;
                 if (Exists(i)) modes.Add(i, GetName(i));
             }
 
@@ -50,9 +52,10 @@
 
         public static List<int> GetList()
         {
-            List<int> modes = new() { 2, 0, 1 };
+            List<int> modes = new() { 2, 0, 1, 20 };
             for (int i = 3; i < maxModes; i++)
             {
+                if (i == 20) continue;
                 if (Exists(i)) modes.Add(i);
             }
 
@@ -104,16 +107,25 @@
 
         public static int GetCurrent()
         {
-            return AppConfig.Get("performance_mode");
+            int mode = AppConfig.Get("performance_mode");
+
+            if (!Exists(mode))
+                return 0;
+
+            return mode;
         }
 
         public static bool IsCurrentCustom()
         {
-            return GetCurrent() > 2;
+            int mode = GetCurrent();
+            return mode > 2 && mode != 20;
         }
 
         public static void SetCurrent(int mode)
         {
+            if (!Exists(mode))
+                mode = 0;
+
             AppConfig.Set("performance_" + (int)SystemInformation.PowerStatus.PowerLineStatus, mode);
             AppConfig.Set("performance_mode", mode);
         }
@@ -135,6 +147,8 @@
 
         public static int GetBase(int mode)
         {
+            if (mode == 20)
+                return 3;
             if (mode >= 0 && mode <= 2)
                 return mode;
             else
@@ -148,9 +162,11 @@
                 case 0:
                     return Properties.Strings.Balanced;
                 case 1:
-                    return Properties.Strings.Turbo;
+                    return Properties.Strings.TurboCPU;
                 case 2:
                     return Properties.Strings.Silent;
+                case 20:
+                    return Properties.Strings.TurboGPU;
                 default:
                     return AppConfig.GetString("mode_name_" + mode);
             }
