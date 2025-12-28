@@ -1,4 +1,4 @@
-using GHelper.Gpu.NVidia;
+﻿using GHelper.Gpu.NVidia;
 using GHelper.Helpers;
 using GHelper.USB;
 using PawnIO;
@@ -105,11 +105,13 @@ namespace GHelper.Mode
         {
             ResetRyzen();
 
-            Program.acpi.DeviceSet(AsusACPI.PerformanceMode, Modes.GetCurrentBase(), "Mode");
+            int acpiMode = Modes.GetCurrentBase() == 3 ? AsusACPI.PerformanceTurbo : Modes.GetCurrentBase();
+
+            Program.acpi.DeviceSet(AsusACPI.PerformanceMode, acpiMode, "Mode");
 
             // Default power mode
             AppConfig.RemoveMode("powermode");
-            PowerNative.SetPowerMode(Modes.GetCurrentBase());
+            PowerNative.SetPowerMode(acpiMode);
         }
 
         public void Toast()
@@ -125,10 +127,9 @@ namespace GHelper.Mode
 
             if (!Modes.Exists(mode)) mode = 0;
 
-            settings.ShowMode(mode);
-
             Modes.SetCurrent(mode);
 
+            settings.ShowMode(mode);
 
             _modeCts.Cancel();
             _modeCts = new CancellationTokenSource();
@@ -139,9 +140,13 @@ namespace GHelper.Mode
                 try
                 {
                     bool reset = AppConfig.IsResetRequired() && (Modes.GetBase(oldMode) == Modes.GetBase(mode)) && customPower > 0 && !AppConfig.IsApplyPower();
+                    bool baseChanged = (Modes.GetBase(oldMode) <= 2 ? Modes.GetBase(oldMode) : AsusACPI.PerformanceTurbo) != (Modes.GetBase(mode) <= 2 ? Modes.GetBase(mode) : AsusACPI.PerformanceTurbo);
 
-                    customFans = false;
-                    customPower = 0;
+                    if (baseChanged)
+                    {
+                        customFans = false;
+                        customPower = 0;
+                    }
 
                     SetModeLabel();
 
@@ -155,9 +160,10 @@ namespace GHelper.Mode
                     ct.ThrowIfCancellationRequested();
 
                     if (AppConfig.Is("status_mode")) Program.acpi.DeviceSet(AsusACPI.StatusMode, [0x00, Modes.GetBase(mode) == AsusACPI.PerformanceSilent ? (byte)0x02 : (byte)0x03], "StatusMode");
-                    int status = Program.acpi.DeviceSet(AsusACPI.PerformanceMode, AppConfig.IsManualModeRequired() ? AsusACPI.PerformanceManual : Modes.GetBase(mode), "Mode");
+                    int acpiMode = Modes.GetBase(mode) == 3 ? AsusACPI.PerformanceTurbo : Modes.GetBase(mode);
+                    int status = Program.acpi.DeviceSet(AsusACPI.PerformanceMode, AppConfig.IsManualModeRequired() ? AsusACPI.PerformanceManual : acpiMode, "Mode");
                     // Vivobook fallback
-                    if (status != 1) Program.acpi.SetVivoMode(Modes.GetBase(mode));
+                    if (status != 1) Program.acpi.SetVivoMode(acpiMode);
 
                     SetGPUClocks();
 
@@ -192,7 +198,10 @@ namespace GHelper.Mode
                 if (AppConfig.GetModeString("powermode") is not null)
                     PowerNative.SetPowerMode(AppConfig.GetModeString("powermode"));
                 else
-                    PowerNative.SetPowerMode(Modes.GetBase(mode));
+                {
+                    int powerMode = Modes.GetBase(mode) == 3 ? AsusACPI.PerformanceTurbo : Modes.GetBase(mode);
+                    PowerNative.SetPowerMode(powerMode);
+                }
 
                 if (AppConfig.IsAutoASPM()) PowerNative.SetBalancedASPM();
             }
@@ -294,12 +303,12 @@ namespace GHelper.Mode
 
         }
 
-        public void AutoPower(bool launchAsAdmin = false)
+        public void AutoPower(bool launchAsAdmin = false, bool forceApply = false)
         {
 
             customPower = 0;
 
-            bool applyPower = AppConfig.IsApplyPower();
+            bool applyPower = forceApply || AppConfig.IsApplyPower();
             bool applyFans = AppConfig.IsApplyFans();
 
             if (applyPower && !applyFans && AppConfig.IsFanRequired())
