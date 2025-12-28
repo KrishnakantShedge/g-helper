@@ -2178,11 +2178,20 @@ namespace GHelper.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to TurboCPU.
+        /// </summary>
+        internal static string TurboCPU {
+            get {
+                return ResourceManager.GetString("TurboCPU", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Turbo.
         /// </summary>
-        internal static string Turbo {
+        internal static string TurboGPU {
             get {
-                return ResourceManager.GetString("Turbo", resourceCulture);
+                return ResourceManager.GetString("TurboGPU", resourceCulture);
             }
         }
         

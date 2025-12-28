@@ -746,8 +746,11 @@ Do you still want to continue?</value>
   <data name="Touchscreen" xml:space="preserve">
     <value>Touchscreen</value>
   </data>
-  <data name="Turbo" xml:space="preserve">
-    <value>Turbo</value>
+  <data name="TurboCPU" xml:space="preserve">
+    <value>Turbo CPU</value>
+  </data>
+  <data name="TurboGPU" xml:space="preserve">
+    <value>Turbo GPU</value>
   </data>
   <data name="TurnedOff" xml:space="preserve">
     <value>Turned off</value>

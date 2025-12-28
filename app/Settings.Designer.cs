@@ -60,6 +60,7 @@ namespace GHelper
             buttonSilent = new RButton();
             buttonBalanced = new RButton();
             buttonTurbo = new RButton();
+            buttonTurboGPU = new RButton();
             buttonFans = new RButton();
             panelCPUTitle = new Panel();
             picturePerf = new PictureBox();
@@ -584,15 +585,17 @@ namespace GHelper
             // 
             tablePerf.AutoSize = true;
             tablePerf.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            tablePerf.ColumnCount = 4;
-            tablePerf.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
-            tablePerf.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
-            tablePerf.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
-            tablePerf.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+            tablePerf.ColumnCount = 5;
+            tablePerf.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
+            tablePerf.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
+            tablePerf.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
+            tablePerf.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
+            tablePerf.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
             tablePerf.Controls.Add(buttonSilent, 0, 0);
             tablePerf.Controls.Add(buttonBalanced, 1, 0);
             tablePerf.Controls.Add(buttonTurbo, 2, 0);
-            tablePerf.Controls.Add(buttonFans, 3, 0);
+            tablePerf.Controls.Add(buttonTurboGPU, 3, 0);
+            tablePerf.Controls.Add(buttonFans, 4, 0);
             tablePerf.Dock = DockStyle.Top;
             tablePerf.Location = new Point(20, 60);
             tablePerf.Margin = new Padding(8, 4, 8, 4);
@@ -665,9 +668,31 @@ namespace GHelper
             buttonTurbo.Secondary = false;
             buttonTurbo.Size = new Size(188, 120);
             buttonTurbo.TabIndex = 2;
-            buttonTurbo.Text = "&Turbo";
+            buttonTurbo.Text = Properties.Strings.TurboCPU;
             buttonTurbo.TextImageRelation = TextImageRelation.ImageAboveText;
             buttonTurbo.UseVisualStyleBackColor = false;
+            // 
+            // buttonTurboGPU
+            // 
+            buttonTurboGPU.Activated = false;
+            buttonTurboGPU.BackColor = SystemColors.ControlLightLight;
+            buttonTurboGPU.BorderColor = Color.Transparent;
+            buttonTurboGPU.BorderRadius = 5;
+            buttonTurboGPU.Dock = DockStyle.Fill;
+            buttonTurboGPU.FlatAppearance.BorderSize = 0;
+            buttonTurboGPU.FlatStyle = FlatStyle.Flat;
+            buttonTurboGPU.ForeColor = SystemColors.ControlText;
+            buttonTurboGPU.Image = Properties.Resources.icons8_rocket_48;
+            buttonTurboGPU.ImageAlign = ContentAlignment.BottomCenter;
+            buttonTurboGPU.Location = new Point(592, 4);
+            buttonTurboGPU.Margin = new Padding(4);
+            buttonTurboGPU.Name = "buttonTurboGPU";
+            buttonTurboGPU.Secondary = false;
+            buttonTurboGPU.Size = new Size(188, 120);
+            buttonTurboGPU.TabIndex = 2;
+            buttonTurboGPU.Text = Properties.Strings.TurboGPU;
+            buttonTurboGPU.TextImageRelation = TextImageRelation.ImageAboveText;
+            buttonTurboGPU.UseVisualStyleBackColor = false;
             // 
             // buttonFans
             // 
@@ -2082,6 +2107,7 @@ namespace GHelper
         private CheckBox checkStartup;
         private Panel panelPerformance;
         private TableLayoutPanel tablePerf;
+        private RButton buttonTurboGPU;
         private RButton buttonTurbo;
         private RButton buttonBalanced;
         private RButton buttonSilent;
