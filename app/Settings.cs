@@ -65,7 +65,8 @@ namespace GHelper
 
             buttonSilent.Text = Properties.Strings.Silent;
             buttonBalanced.Text = Properties.Strings.Balanced;
-            buttonTurbo.Text = Properties.Strings.Turbo;
+            buttonTurbo.Text = Properties.Strings.TurboCPU;
+            buttonTurboGPU.Text = Properties.Strings.TurboGPU;
             buttonFans.Text = Properties.Strings.FansPower;
 
             buttonEco.Text = Properties.Strings.EcoMode;
@@ -108,7 +109,8 @@ namespace GHelper
             panelPerformance.AccessibleName = Properties.Strings.PerformanceMode;
             buttonSilent.AccessibleName = Properties.Strings.Silent;
             buttonBalanced.AccessibleName = Properties.Strings.Balanced;
-            buttonTurbo.AccessibleName = Properties.Strings.Turbo;
+            buttonTurbo.AccessibleName = Properties.Strings.TurboCPU;
+            buttonTurboGPU.AccessibleName = Properties.Strings.TurboGPU;
             buttonFans.AccessibleName = Properties.Strings.FansAndPower;
             panelGPU.AccessibleName = Properties.Strings.GPUMode;
             buttonEco.AccessibleName = Properties.Strings.EcoMode;
@@ -133,6 +135,7 @@ namespace GHelper
             buttonSilent.BorderColor = colorEco;
             buttonBalanced.BorderColor = colorStandard;
             buttonTurbo.BorderColor = colorTurbo;
+            buttonTurboGPU.BorderColor = colorTurbo;
             buttonFans.BorderColor = colorCustom;
 
             buttonEco.BorderColor = colorEco;
@@ -161,6 +164,7 @@ namespace GHelper
             buttonSilent.Click += ButtonSilent_Click;
             buttonBalanced.Click += ButtonBalanced_Click;
             buttonTurbo.Click += ButtonTurbo_Click;
+            buttonTurboGPU.Click += ButtonTurboGPU_Click;
 
             buttonEco.Click += ButtonEco_Click;
             buttonStandard.Click += ButtonStandard_Click;
@@ -1660,6 +1664,7 @@ namespace GHelper
             buttonBalanced.Activated = false;
             buttonTurbo.Activated = false;
             buttonFans.Activated = false;
+            buttonTurboGPU.Activated = false;
 
             switch (mode)
             {
@@ -1668,6 +1673,9 @@ namespace GHelper
                     break;
                 case AsusACPI.PerformanceTurbo:
                     buttonTurbo.Activated = true;
+                    break;
+                case 20:
+                    buttonTurboGPU.Activated = true;
                     break;
                 case AsusACPI.PerformanceBalanced:
                     buttonBalanced.Activated = true;
@@ -1900,19 +1908,23 @@ namespace GHelper
 
         private void ButtonSilent_Click(object? sender, EventArgs e)
         {
-            Program.modeControl.SetPerformanceMode(AsusACPI.PerformanceSilent);
+            Program.modeControl.SetPerformanceMode(2);
         }
 
         private void ButtonBalanced_Click(object? sender, EventArgs e)
         {
-            Program.modeControl.SetPerformanceMode(AsusACPI.PerformanceBalanced);
+            Program.modeControl.SetPerformanceMode(0);
         }
 
         private void ButtonTurbo_Click(object? sender, EventArgs e)
         {
-            Program.modeControl.SetPerformanceMode(AsusACPI.PerformanceTurbo);
+            Program.modeControl.SetPerformanceMode(1);
         }
 
+        private void ButtonTurboGPU_Click(object? sender, EventArgs e)
+        {
+            Program.modeControl.SetPerformanceMode(20);
+        }
 
         public void ButtonEnabled(RButton but, bool enabled)
         {
