@@ -782,7 +782,7 @@ namespace GHelper.Input
 
             if (slateState >= 0) SetSlateMode(slateState);
             if (tabletState && touchpadState || !tabletState && !touchpadState) ToggleTouchpad();
-
+            InitFNLock();
         }
 
         static int GetTentState()
@@ -1035,6 +1035,7 @@ namespace GHelper.Input
         {
             if (lidClose || tentMode) return;
             Aura.ApplyBrightness(GetBacklight(), "Auto", init);
+            backlightActivity = true;
         }
 
         public static void StartupBacklight()

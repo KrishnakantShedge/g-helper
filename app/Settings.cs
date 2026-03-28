@@ -247,7 +247,7 @@ namespace GHelper
 
             sensorTimer = new System.Timers.Timer(AppConfig.Get("sensor_timer", 1000));
             sensorTimer.Elapsed += OnTimedEvent;
-            sensorTimer.Enabled = true;
+            sensorTimer.Enabled = false;
 
             labelCharge.MouseEnter += PanelBattery_MouseEnter;
             labelCharge.MouseLeave += PanelBattery_MouseLeave;
@@ -312,7 +312,7 @@ namespace GHelper
 
         private void ButtonAmdOled_Click(object? sender, EventArgs e)
         {
-            ProcessHelper.RunCMD(@"C:\Program Files\AMD\CNext\CNext\RadeonSoftware.exe","");
+            AmdDisplay.RunAdrenaline();
             activateCheck = true;
         }
 
@@ -1212,7 +1212,7 @@ namespace GHelper
             pictureColor2.BackColor = Aura.Color2;
             pictureColor2.Visible = Aura.HasSecondColor();
 
-            bool dynamic = AppConfig.IsDynamicLighting() && DynamicLightingHelper.IsEnabled();
+            bool dynamic = AppConfig.IsDynamicLighting() && DynamicLightingHelper.IsEnabled() && !AppConfig.IsDynamicLightingOnly();
 
             if (dynamic)
             {
