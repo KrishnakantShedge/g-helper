@@ -35,9 +35,11 @@ namespace GHelper.UI
             CalibrateItemHeight();
         }
 
+        public bool NativeHeight { get; set; }
+
         private void CalibrateItemHeight()
         {
-            if (DrawMode != DrawMode.OwnerDrawFixed) return;
+            if (DrawMode != DrawMode.OwnerDrawFixed || NativeHeight) return;
             int chrome = PreferredHeight - ItemHeight;
             int target = (int)Math.Round(44 * (DeviceDpi / 192f));
             ItemHeight = Math.Max(1, target - chrome);
@@ -52,8 +54,8 @@ namespace GHelper.UI
             }
 
             bool selected = (e.State & DrawItemState.Selected) != 0;
-            Color bg = selected ? RForm.colorStandard : BackColor;
-            Color fg = selected ? Color.White : ForeColor;
+            Color bg = selected ? RForm.borderMain : BackColor;
+            Color fg = ForeColor;
 
             using (var bgBrush = new SolidBrush(bg))
                 e.Graphics.FillRectangle(bgBrush, e.Bounds);
@@ -250,7 +252,11 @@ namespace GHelper.UI
                     {
                         DrawRoundedRectangle(g, p, innerBorder, innerRadiusL, innerRadiusR);
                     }
-                    ControlHelper.DrawGradientBorder(g, outerBorder, outerBorderColor, outerRadius);
+                    if (DropDownStyle == ComboBoxStyle.DropDown)
+                        using (var b = new SolidBrush(innerBorderColor))
+                            g.FillRectangle(b, innerInnerBorder);
+                    if (!RForm.flatTheme)
+                        ControlHelper.DrawGradientBorder(g, outerBorder, outerBorderColor, outerRadius);
                 }
                 if (shoulEndPaint)
                     EndPaint(Handle, ref ps);
