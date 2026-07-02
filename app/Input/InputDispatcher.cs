@@ -26,11 +26,11 @@ namespace GHelper.Input
         public static Keys keyProfile = (Keys)AppConfig.Get("keybind_profile", (int)Keys.F5);
         public static Keys keyApp = (Keys)AppConfig.Get("keybind_app", (int)Keys.F12);
 
-        public static Keys keyProfile0 = (Keys)AppConfig.Get("keybind_profile_0", (int)Keys.F17);
-        public static Keys keyProfile1 = (Keys)AppConfig.Get("keybind_profile_1", (int)Keys.F18);
-        public static Keys keyProfile2 = (Keys)AppConfig.Get("keybind_profile_2", (int)Keys.F16);
-        public static Keys keyProfile3 = (Keys)AppConfig.Get("keybind_profile_3", (int)Keys.F19);
-        public static Keys keyProfile4 = (Keys)AppConfig.Get("keybind_profile_4", (int)Keys.F20);
+        public static Keys keyProfile0 = (Keys)AppConfig.Get("keybind_profile_0", (int)Keys.D1);
+        public static Keys keyProfile1 = (Keys)AppConfig.Get("keybind_profile_1", (int)Keys.D2);
+        public static Keys keyProfile2 = (Keys)AppConfig.Get("keybind_profile_2", (int)Keys.D3);
+        public static Keys keyProfile3 = (Keys)AppConfig.Get("keybind_profile_3", (int)Keys.D4);
+        public static Keys keyProfile4 = (Keys)AppConfig.Get("keybind_profile_4", (int)Keys.D5);
         public static Keys keyXGM = (Keys)AppConfig.Get("keybind_xgm", (int)Keys.F21);
         public static Keys keyOverlay = (Keys)AppConfig.Get("keybind_overlay", (int)Keys.O);
 
