@@ -323,7 +323,6 @@ namespace GHelper
         private void ButtonEnergySaver_Click(object? sender, EventArgs e)
         {
             KeyboardHook.KeyKeyPress(Keys.LWin, Keys.A);
-            activateCheck = true;
         }
 
         private void LabelBacklight_Click(object? sender, EventArgs e)
@@ -635,7 +634,6 @@ namespace GHelper
         {
             if (activateCheck)
             {
-                buttonEnergySaver.Visible = PowerNative.GetBatterySaverStatus();
                 buttonAmdOled.Visible = AmdDisplay.IsOledPowerOptimization();
                 activateCheck = false;
             }
@@ -708,12 +706,6 @@ namespace GHelper
             {
                 Task.Run((Action)RefreshPeripheralsBattery);
                 updateControl.CheckForUpdates();
-                BeginInvoke(new Action(() =>
-                {
-                    ScreenControl.InitScreen();
-                    VisualizeXGM();
-                    buttonEnergySaver.Visible = PowerNative.GetBatterySaverStatus();
-                }));
             }
         }
 
@@ -786,6 +778,11 @@ namespace GHelper
                             break;
                     }
 
+                }
+                else if (settings.PowerSetting == NativeMethods.PowerSettingGuid.EnergySaverStatus)
+                {
+                    Logger.WriteLine("Battery Saver: " + settings.Data);
+                    buttonEnergySaver.Visible = settings.Data != 0;
                 }
                 else
                 {
@@ -1187,7 +1184,7 @@ namespace GHelper
 
         private void SetColorPicker(string colorField, Color initial)
         {
-            RColorPicker colorDlg = new RColorPicker(initial);
+            RColorPicker colorDlg = new RColorPicker(initial, colorField == "aura_color" && Aura.HasRandomColor());
             colorDlg.ColorChanged += c =>
             {
                 AppConfig.Set(colorField, c.ToArgb());
@@ -1787,6 +1784,12 @@ namespace GHelper
         {
 
             bool connected = Program.acpi.IsXGConnected();
+            int activated = connected ? Program.acpi.DeviceGet(AsusACPI.GPUXG) : -1;
+            Invoke(() => VisualizeXGM(connected, activated, GPUMode));
+        }
+
+        void VisualizeXGM(bool connected, int activated, int GPUMode)
+        {
             buttonXGM.Enabled = buttonXGM.Visible = connected;
 
             if (!connected) return;
@@ -1795,7 +1798,6 @@ namespace GHelper
                 ButtonEnabled(buttonXGM, AppConfig.IsAMDiGPU() || GPUMode != AsusACPI.GPUModeEco);
 
 
-            int activated = Program.acpi.DeviceGet(AsusACPI.GPUXG);
             Logger.WriteLine("XGM Activated flag: " + activated);
 
             buttonXGM.Activated = activated == 1;
@@ -1952,17 +1954,25 @@ namespace GHelper
         }
 
 
-        public void VisualiseIcon()
+        private (int, bool, bool)? lastIcon;
+        private bool isDark = CheckSystemDarkModeStatus();
+
+        public void VisualiseIcon(bool themeChange = false)
         {
             if (Program.trayIcon is null) return;
+            if (themeChange) isDark = CheckSystemDarkModeStatus();
+
             int GPUMode = AppConfig.Get("gpu_mode");
-            bool isDark = CheckSystemDarkModeStatus();
+            bool bw = AppConfig.IsBWIcon();
+
+            if (lastIcon == (GPUMode, isDark, bw)) return;
+            lastIcon = (GPUMode, isDark, bw);
 
             Icon newIcon = GPUMode switch
             {
-                AsusACPI.GPUModeEco => AppConfig.IsBWIcon() ? (!isDark ? Properties.Resources.dark_eco : Properties.Resources.light_eco) : Properties.Resources.eco,
-                AsusACPI.GPUModeUltimate => AppConfig.IsBWIcon() ? (!isDark ? Properties.Resources.dark_standard : Properties.Resources.light_standard) : Properties.Resources.ultimate,
-                _ => AppConfig.IsBWIcon() ? (!isDark ? Properties.Resources.dark_standard : Properties.Resources.light_standard) : Properties.Resources.standard,
+                AsusACPI.GPUModeEco => bw ? (isDark ? Properties.Resources.light_eco : Properties.Resources.dark_eco) : Properties.Resources.eco,
+                AsusACPI.GPUModeUltimate => bw ? (isDark ? Properties.Resources.light_standard : Properties.Resources.dark_standard) : Properties.Resources.ultimate,
+                _ => bw ? (isDark ? Properties.Resources.light_standard : Properties.Resources.dark_standard) : Properties.Resources.standard,
             };
 
             Icon? oldIcon = Program.trayIcon.Icon;
