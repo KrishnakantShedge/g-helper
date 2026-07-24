@@ -1523,6 +1523,7 @@ namespace GHelper
 
         private void ButtonQuit_Click(object? sender, EventArgs e)
         {
+            AsusLampArray.Release();
             matrixControl.Dispose();
             Close();
             Program.trayIcon.Visible = false;
