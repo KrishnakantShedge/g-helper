@@ -166,7 +166,7 @@
     <value>Anwenden</value>
   </data>
   <data name="ApplyFanCurve" xml:space="preserve">
-    <value>Apply Fan Curve</value>
+    <value>Lüfterkurve anwenden</value>
   </data>
   <data name="ApplyPowerLimits" xml:space="preserve">
     <value>Leistungsgrenzen anwenden</value>
@@ -555,7 +555,7 @@ Trotzdem fortfahren?</value>
     <value>Left Trigger Deadzones</value>
   </data>
   <data name="MatrixAudio" xml:space="preserve">
-    <value>Audio</value>
+    <value>Audio Visualisierung</value>
   </data>
   <data name="MatrixAudioMode" xml:space="preserve">
     <value>Visualizer Mode</value>
@@ -982,6 +982,13 @@ und startet sie automatisch neu, wenn die GPU aktiviert wird</value>
     <value>Verhindert, dass PCIe-Geräte in energiesparende Leerlaufzustände wechseln.
 Empfohlen, wenn zufällige Hänger oder nicht reagierende Hardware auftreten.</value>
   </data>
+  <data name="DisableStandbyNetworking" xml:space="preserve">
+    <value>Netzwerk im Modern Standby deaktivieren</value>
+  </data>
+  <data name="DisableStandbyNetworkingTooltip" xml:space="preserve">
+    <value>Verhindert, dass Hintergrundaufgaben wie Windows Update
+den schlafenden Laptop aufheizen und den Akku entladen.</value>
+  </data>
   <data name="Overlay" xml:space="preserve">
     <value>Overlay</value>
   </data>
@@ -1017,12 +1024,5 @@ Empfohlen, wenn zufällige Hänger oder nicht reagierende Hardware auftreten.</v
   </data>
   <data name="Always" xml:space="preserve">
     <value>Immer</value>
-  </data>
-  <data name="DisableStandbyNetworking" xml:space="preserve">
-    <value>Netzwerk im Modern Standby deaktivieren</value>
-  </data>
-  <data name="DisableStandbyNetworkingTooltip" xml:space="preserve">
-    <value>Verhindert, dass Hintergrundaufgaben wie Windows Update
-den schlafenden Laptop aufheizen und den Akku entladen.</value>
   </data>
 </root>
