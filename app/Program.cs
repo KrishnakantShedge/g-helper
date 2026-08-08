@@ -59,9 +59,7 @@ namespace GHelper
                 if (AppConfig.IsZ13())
                 {
                     AsusHid.Write([
-                        [AsusHid.AURA_ID, 0xB9],
                         Encoding.ASCII.GetBytes("]ASUS Tech.Inc."),
-                        [AsusHid.AURA_ID, 0x05, 0x20, 0x31, 0, 0x1A],
                         [AsusHid.AURA_ID, 0xC0, 0x03, 0x01]
                     ], "Init");
                 }
@@ -505,11 +503,11 @@ namespace GHelper
                 if (limit > 0 && limit < 100)
                 {
                     Logger.WriteLine($"------- Startup Battery Limit {limit} -------");
-                    ProcessHelper.StartEnableService("ATKWMIACPIIO", false);
                     Logger.WriteLine($"Connecting to ACPI");
                     acpi = new AsusACPI();
                     Logger.WriteLine($"Setting Limit");
-                    acpi.DeviceSet(AsusACPI.BatteryLimit, limit, "Limit");
+                    if (acpi.IsConnected()) acpi.DeviceSet(AsusACPI.BatteryLimit, limit, "Limit");
+                    else AsusACPI.DeviceSetWmi(AsusACPI.BatteryLimit, limit);
                 }
             }
             catch (Exception ex)
