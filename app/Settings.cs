@@ -918,6 +918,17 @@ namespace GHelper
             };
             contextMenuStrip.Items.Add(bwIcon);
 
+            var modeIcon = new ToolStripMenuItem(Properties.Strings.TrayIconMode);
+            modeIcon.Margin = padding;
+            modeIcon.Checked = AppConfig.Is("icon_mode");
+            modeIcon.Click += (sender, args) =>
+            {
+                modeIcon.Checked = !modeIcon.Checked;
+                AppConfig.Set("icon_mode", modeIcon.Checked ? 1 : 0);
+                VisualiseIcon();
+            };
+            contextMenuStrip.Items.Add(modeIcon);
+
             contextMenuStrip.Items.Add("-");
 
             var menuOverlay = new ToolStripMenuItem(Properties.Strings.Overlay);
@@ -1806,6 +1817,8 @@ namespace GHelper
                     menuItem.Checked = ((int)menuItem.Tag == mode);
                 }
             }
+
+            VisualiseIcon();
         }
 
 
@@ -2005,7 +2018,8 @@ namespace GHelper
             {
                 labelTipGPU.Visible = false;
                 labelTipScreen.Visible = false;
-                Top = 5;
+                PerformLayout();
+                if (Top < 0) Top = 5;
             }
 
         }
@@ -2019,7 +2033,12 @@ namespace GHelper
             if (Program.trayIcon is null) return;
             if (themeChange) isDark = CheckSystemDarkModeStatus();
 
-            int GPUMode = AppConfig.Get("gpu_mode");
+            int GPUMode = !AppConfig.Is("icon_mode") ? AppConfig.Get("gpu_mode") : Modes.GetCurrentBase() switch
+            {
+                AsusACPI.PerformanceSilent => AsusACPI.GPUModeEco,
+                AsusACPI.PerformanceTurbo or AsusACPI.PerformanceFullSpeed => AsusACPI.GPUModeUltimate,
+                _ => AsusACPI.GPUModeStandard,
+            };
             bool bw = AppConfig.IsBWIcon();
 
             if (lastIcon == (GPUMode, isDark, bw)) return;
